@@ -6,7 +6,7 @@ yarn-error.log*
 
 # Environment & secrets
 security/
-.sql
+saemtleDb.sql
 
 
 # Logs & runtime data
