@@ -1,6 +1,6 @@
-# Saemtle Airple Monitoring Platform
+# IoT-based Reservoir Monitoring Platform
 
-Saemtle Airple is an end-to-end IoT solution that monitors rural reservoirs and ambient air quality. It combines embedded devices, MQTT messaging, Node.js services, and a responsive web dashboard to deliver real-time visibility and remote control for field engineers and municipal teams.
+This is an end-to-end IoT solution that monitors rural reservoirs and ambient air quality. It combines embedded devices, MQTT messaging, Node.js services, and a responsive web dashboard to deliver real-time visibility and remote control for field engineers and municipal teams.
 
 ## Overview
 
@@ -15,12 +15,11 @@ Saemtle Airple is an end-to-end IoT solution that monitors rural reservoirs and 
    - Publish sensor data (water level, temperature, voltage, airflow) over MQTT to the central broker.
    - Support image capture requests via TCP socket sessions.
 2. **MQTT Ingestion (`ubuntu/mqdb/mqdb.js`)**
-   - Subscribes to `mqdb-saemtle123`.
-   - Persists telemetry and device state to MySQL (`sensordt`, `reservoir`, `users` tables).
+   - Persists telemetry and device state to MySQL.
    - Manages actuator commands, capture requests, and download jobs.
 3. **REST API (`ubuntu/mqdb/api.js`)**
    - Exposes lightweight endpoints (e.g., `/api/sensordata`) for dashboards or third-party integrations.
-4. **Database (`saemtleDb.sql`)**
+4. **Database (`MySQL`)**
    - Stores device registry, user accounts, reservoir metadata, and sensor history.
 5. **Web Dashboard (`test/dist`)**
    - Static front-end bundled with Bootstrap and custom scripts for live charts, tables, and map overlays.
@@ -67,12 +66,11 @@ graph TD
 
 - Node.js 18+
 - MySQL 8 (or compatible MariaDB)
-- MQTT broker (e.g., Eclipse Mosquitto)
+- MQTT broker (Eclipse Mosquitto)
 - AWS EC2 (or any Linux host) for deployment
 
 ## MQTT & TCP Interfaces
 
-- **Topic**: `mqdb-saemtle123`
 - **Inbound Commands**: `LOGIN_START`, `GET_RESERVOIR`, `PUT_CAPTURE`, `GET_SENSES`, etc.
 - **Outbound Responses**: `LOGIN_START_VALIDATION`, `GET_SENSES_DONE`, `GET_CAPTURE_STATUS`, etc.
 - **TCP Socket**: Port number handles base64 image uploads and direct device queries (`RSV_*`, `JPEG_IMG`, `CAPTURE_STATUS`).
@@ -86,7 +84,7 @@ Refer to `mqdb.js` for the complete command matrix and data parsing logic.
 | GET    | `/api/users/:type`   | Placeholder endpoint returning `type`. |
 | GET    | `/api/sensordata`    | Latest 10 sensor rows (descending). |
 
-Extend `api.js` with additional routes for reservoir metadata, chart data, or alerts as needed.
+Extend `api.js` with additional routes for reservoir metadata, chart data, or alerts as needed
 
 ## Logging & Observability
 
