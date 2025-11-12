@@ -70,67 +70,12 @@ graph TD
 - MQTT broker (e.g., Eclipse Mosquitto)
 - AWS EC2 (or any Linux host) for deployment
 
-### Local Setup
-
-1. **Clone & Install**
-
-   ```bash
-   git clone <repo-url>
-   cd saemtle_airple/ubuntu/mqdb
-   npm install
-   ```
-
-2. **Configure Environment**
-
-   Create `ubuntu/mqdb/.env`:
-
-   ```
-   DB_HOST=<mysql-host>
-   DB_USER=<mysql-user>
-   DB_PASSWORD=<mysql-password>
-   DB_NAME=saemtleDb
-   MQTT_HOST=mqtt://<broker-host>
-   MQTT_TOPIC=mqdb-saemtle123
-   TCP_PORT=23579
-   ```
-
-   Update `dbControl.js` and `mqdb.js` to load from `.env` (e.g., with `dotenv`). Avoid committing plaintext credentials.
-
-3. **Run Services**
-
-   ```bash
-   # REST API
-   node api.js
-
-   # MQTT/TCP ingestion
-   node mqdb.js
-   ```
-
-4. **Serve Dashboard**
-
-   ```bash
-   cd ../../test
-   npm install
-   npm run build       # build static assets into dist/
-   npm run start       # serves Pug templates with live reload
-   ```
-
-### Database Initialization
-
-- Import `saemtleDb.sql` into MySQL:
-
-  ```bash
-  mysql -u <user> -p < database_name < saemtleDb.sql
-  ```
-
-- Grant appropriate privileges to the service account.
-
 ## MQTT & TCP Interfaces
 
 - **Topic**: `mqdb-saemtle123`
 - **Inbound Commands**: `LOGIN_START`, `GET_RESERVOIR`, `PUT_CAPTURE`, `GET_SENSES`, etc.
 - **Outbound Responses**: `LOGIN_START_VALIDATION`, `GET_SENSES_DONE`, `GET_CAPTURE_STATUS`, etc.
-- **TCP Socket**: Port `23579` handles base64 image uploads and direct device queries (`RSV_*`, `JPEG_IMG`, `CAPTURE_STATUS`).
+- **TCP Socket**: Port number handles base64 image uploads and direct device queries (`RSV_*`, `JPEG_IMG`, `CAPTURE_STATUS`).
 
 Refer to `mqdb.js` for the complete command matrix and data parsing logic.
 
@@ -149,35 +94,10 @@ Extend `api.js` with additional routes for reservoir metadata, chart data, or al
 - Console and file outputs share consistent formatting (`YYYY-MM-DD HH:MM:SS [LEVEL] message`).
 - Review log rotation settings before production deployment.
 
-## Security Guidelines
-
-- **Secrets**: Move hard-coded credentials (MySQL, MQTT) into environment variables or secret managers.
-- **Network**: Restrict MQTT and TCP ports with AWS Security Groups and local firewalls.
-- **TLS**: Enable HTTPS for the dashboard (see `test/000-default.conf` & `test/default-ssl.conf`).
-- **User Passwords**: Consider hashing & salting rather than the current XOR-based scheme in `mqdb.js`.
-
-## Testing
-
-- Create integration tests around `mqdb.js` MQTT/TCP handlers using simulated payloads.
-- Add REST API tests (e.g., Jest + Supertest) for new routes.
-- Front-end smoke tests with Cypress or Playwright ensure charts, maps, and tables render correctly.
-
 ## Deployment Checklist
 
 - Build and upload dashboard assets from `test/dist` to the web server root.
 - Run `mqdb.js` and `api.js` under a process manager (PM2, systemd) with restart policies.
 - Monitor MySQL performance and configure backups for `sensordt` growth.
 - Configure MQTT broker authentication and QoS 2 for guaranteed delivery.
-
-## Roadmap Ideas
-
-- Replace TCP image uploads with MQTT binary payloads or HTTP uploads.
-- Introduce alerting (SMS/Email) for threshold breaches.
-- Expand REST API for analytics dashboards (rolling averages, forecasts).
-- Containerize services with Docker Compose for reproducible deployment.
-
----
-
-Saemtle Airple empowers stakeholders to supervise critical water resources and environmental metrics remotely. Contributions and feedback are welcome—please open issues or submit pull requests with proposed improvements.
-
 
