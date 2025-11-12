@@ -47,17 +47,15 @@ graph TD
 ```
 .
 ├── README.md
-├── saemtleDb.sql                 # Database schema and seed data
 ├── ubuntu/mqdb/                  # Node.js services
 │   ├── api.js                    # Express API endpoints
 │   ├── dbControl.js              # MySQL connection pool (mysql2/promise)
 │   ├── mqdb.js                   # MQTT/TCP ingestion and command processor
 │   └── package.json              # Service dependencies and scripts
 ├── test/                         # Front-end build pipeline (startbootstrap)
-│   ├── dist/                     # Production-ready static dashboard
-│   ├── src/                      # Pug, SCSS, JS sources
-│   └── scripts/                  # Asset build tooling
-└── security/                     # SSH keys and IDS (do not version sensitive secrets)
+    ├── dist/                     # Production-ready static dashboard
+    ├── src/                      # Pug, SCSS, JS sources
+    └── scripts/                  # Asset build tooling
 ```
 
 ## Getting Started
